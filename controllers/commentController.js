@@ -8,6 +8,7 @@ const add_comment =
             const commentToSave = new Comment(req.body);
             commentToSave.postId = req.params.id;
             const savedcomment = await commentToSave.save();
+
             await Post.findOneAndUpdate(
                 { _id: req.params.id },
                 { $push: { comments: savedcomment._id } }

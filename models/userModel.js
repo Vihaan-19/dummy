@@ -7,9 +7,9 @@ const userSchema = new mongoose.Schema({
     },
 
     //Add Profile Picture
-    profilePic: {
+    image: {
         type: String,
-        default: ""
+        default: "/public/images/default_user.png"
     },
 
     username: {
@@ -24,12 +24,8 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         //Email Verification
-        match: [
-            /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
-            'Please provide valid email',
-        ],
+        match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, 'Please provide valid email'],
         unique: true
-
     },
 
     password: {

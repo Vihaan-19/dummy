@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../models/userModel');
+const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const dotenv = require("dotenv");
 const cookieParser = require('cookie-parser');
-express().use(cookieParser);
 
 router.use(express.json());
-
+router.use(cookieParser());
+dotenv.config();
 //This file will export the signup and login function to authRoutes
 const signup_get =
     (req, res) => {
@@ -19,53 +20,64 @@ const login_get =
         res.send('User Login Page')
     }
 
-
 const signup_post =
     async (req, res) => {
 
         try {
             //getting data from the body
-            const { name, username, email, password } = req.body;
+            const { name, username, email, password, bio } = req.body;
 
             //all data is required required*
             if (!name || !username || !email || !password)
                 res.status(400).send('All fields are required');
 
 
-            //verify if user already exists
-            //database query
-            const checkExistingUser = await user.findOne({ email });
+            //verify if user already exists, using email
+            const checkExistingUser = await User.findOne({ email });
             if (checkExistingUser)
                 res.status(400).send('User Already Exists');
 
+            else {
+                //encrypt password 
+                const hashedPassword = await bcrypt.hash(password, 10);
+                //Create New User
+                //if user has provided an image
+                if (req.file) {
+                    var newUser = await User.create({
+                        name,
+                        image: req.file.path,
+                        username,
+                        bio,
+                        email,
+                        password: hashedPassword
+                    })
+                }
 
-            //encrypt password 
-            const hashedPassword = await bcrypt.hash(password, 10);
+                //else show default image
+                else {
+                    var newUser = await User.create({
+                        name,
+                        username,
+                        bio,
+                        email,
+                        password: hashedPassword
+                    })
+                }
 
-            //Create New User
-            const newUser = await user.create({
-                name,
-                username,
-                email,
-                password: hashedPassword
-            })
+                //generate token
+                var token = jwt.sign({ id: newUser._id }, process.env.secret_key, { expiresIn: "2h" });
+                newUser.token = token;
+                //Setting password to undefined
+                newUser.password = undefined;
 
-            //generate token
-            const token = jwt.sign({ id: newUser._id }, 'shhhh', { expiresIn: "2h" });
-            //Adding token to user
-            newUser.token = token;
-            //Setting password to undefined
-            newUser.password = undefined;
-
-            res.status(200).json(newUser);
+                res.status(200).json(newUser);
+            }
         }
 
         catch (err) {
             console.log(err);
         }
     }
-
-
 
 const login_post =
     async (req, res) => {
@@ -75,12 +87,12 @@ const login_post =
             if (!email || !password)
                 res.status(400).send('All fields required');
             //check if user exists in database
-            const loggedInUser = await user.findOne({ email })
+            const loggedInUser = await User.findOne({ email })
 
             //verify the entered password from the user.password
             if (loggedInUser && (await bcrypt.compare(password, loggedInUser.password))) {
                 //if verified, create and send a token
-                const token = jwt.sign({ loggedInUser: loggedInUser._id }, 'shhhh', { expiresIn: "2h" });
+                const token = jwt.sign({ id: loggedInUser._id }, process.env.secret_key, { expiresIn: "2h" });
                 loggedInUser.token = token;
                 loggedInUser.password = undefined;
 
@@ -92,7 +104,6 @@ const login_post =
                 }
                 res.status(200).cookie("token", token, options).json({
                     success: true,
-                    token,
                     loggedInUser
                 })
             }
@@ -109,4 +120,8 @@ const login_post =
         }
     }
 
-module.exports = { signup_get, login_get, signup_post, login_post }
+module.exports = { signup_get, login_get, signup_post, login_post };
+
+
+
+

@@ -12,16 +12,18 @@ const postSchema = new mongoose.Schema(
         },
 
         image: {
-            type: String
-        },
-
-        video: {
-            type: String
+            type: String,
+            required: true
         },
 
         likes: {
             type: Array,
-            default: [],
+            default: []
+        },
+
+        category: {
+            type: String,
+            default: "general"
         },
 
         comments: [{

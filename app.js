@@ -3,9 +3,9 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const helmet = require('helmet');
+//For profile pictures and reels
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -29,7 +29,6 @@ mongoose.connect(process.env.mongo_uri, { useUnifiedTopology: true })
     .catch((err) => { console.log(err) });
 
 
-//Setting up Middle-Ware 
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);

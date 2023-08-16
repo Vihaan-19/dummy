@@ -12,7 +12,8 @@ const reelSchema = new mongoose.Schema({
     },
 
     video: {
-        type: String
+        type: String,
+        required:true
     },
 
     likes: {
