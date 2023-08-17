@@ -9,7 +9,12 @@ Final Task of GeekHaven WebD Wing.
 
 ## Documentation
 
-[Features](#features)
+- [Features](#features)
+- [Installation](#installation)
+- [API](#api%20reference)
+- [Optimizations](#optimizations)
+
+
 
 
 ## Features
@@ -26,7 +31,7 @@ Final Task of GeekHaven WebD Wing.
 
 
 
-## Run Locally
+## Installation
 
 Clone the project
 
