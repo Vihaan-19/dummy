@@ -11,7 +11,7 @@ Final Task of GeekHaven WebD Wing.
 
 - [Features](#features)
 - [Installation](#installation)
-- [API](#api%20reference)
+- [API Reference](#api%20reference)
 - [Optimizations](#optimizations)
 
 
