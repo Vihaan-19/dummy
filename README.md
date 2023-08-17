@@ -76,12 +76,13 @@ nodemon app.js
   POST /api/auth/login
 ```
 
+#### Login
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `api_key` | `string` | **Required**. Your API key |
 
 
-#### Login
+
 
 ```http
   GET /api/items/${id}
